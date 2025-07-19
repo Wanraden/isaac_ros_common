@@ -291,5 +291,16 @@ docker run -it --rm \
     --runtime nvidia \
     --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
     --workdir /workspaces/isaac_ros-dev \
+    --device=/dev/snd \
+    --device=/dev/bus/usb \
+    -e ALSA_CARD=1 \
+    -e ALSA_DEVICE=hw:1,0 \
+    --device-cgroup-rule='c 116:* rmw' \
+    -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+    -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+    -v ~/.config/pulse/cookie:/admin/.config/pulse/cookie \
+    --shm-size=256m \
+    --ulimit rtprio=99 \
+    --ulimit memlock=-1 \
     $BASE_NAME \
     /bin/bash
